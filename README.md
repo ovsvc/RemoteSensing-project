@@ -27,6 +27,8 @@ Satellite images for the dataset were extracted from [Sentinel Hub](https://www.
 * Waterbody sampling: images extracted from river-rich areas
 * Flood event sampling: post-event imagery from major floods (Storm Boris (Sep 2024), Bavaria Flood (May–Jun 2024), Germany Flood (Jul–Aug 2021))
 
+Geojsons relevant for every sampling strategy and flood event can be found in `geojsons`.
+
 #### 2.2 Mask Annotation
 
 ▶️ Relevant code for masks annotation part - `01_correcting masks.ipynb` and `02_splitting_Sentinel_dataset.ipynb`.
