@@ -21,13 +21,14 @@ This project includes a custom-built dataset of satellite images from Sentinel-2
 
 #### 2.1 Dataset Collection
 ▶️ Relevant code for dataset collection part - `00_creating_Landsat_dataset.ipynb` and `00_creating_Sentinel_dataset.ipynb`.
+Geojsons relevant for every sampling strategy and flood event can be found in `geojsons`.
 
 Satellite images for the dataset were extracted from [Sentinel Hub](https://www.sentinel-hub.com/) using stratified random sampling strategy. Data was extracted using 3 strategies: 
 * General sampling: images randomly selected across Central & Eastern Europe (2022–2024)
 * Waterbody sampling: images extracted from river-rich areas
 * Flood event sampling: post-event imagery from major floods (Storm Boris (Sep 2024), Bavaria Flood (May–Jun 2024), Germany Flood (Jul–Aug 2021))
 
-Geojsons relevant for every sampling strategy and flood event can be found in `geojsons`.
+
 
 #### 2.2 Mask Annotation
 
@@ -60,3 +61,47 @@ All experiments with models were conducted in JupiterHub (T4 GPU), to upload dat
 
 ------------
 ### 2. Modelling
+
+
+
+As the project was conducted in collaboration with other students there were 3 different approaches to modelling:
+* Training on Sentinel-2 dataset → testing on Sentinel-2 & Landsat datasets
+* Training on Landsat dataset → testing on Sentinel-2 & Landsat datasets
+* Training on Sentinel-2 & Landsat datasets → testing on Sentinel-2 & Landsat datasets
+
+#### 2.1 Training on Sentinel-2 dataset → testing on Sentinel-2 & Landsat datasets
+
+▶️ Relevant code for modelling part - `03_Modelling.ipynb`.
+
+**2.1.1 Final model** 
+
+DeepLabV3 + ResNet34 for Water Segmentation with Uncertainty Estimation (Monte Carlo Dropout).
+Model provides classification into 4 classes — background, water, cloud, and snow/ice.
+The schema is based on the original paper by Chen et al.
+
+![Slide1](https://github.com/user-attachments/assets/1e19c1d3-c4a2-472a-be50-fd4c16be1983)
+
+**2.1.2 Training Setup**
+
+* Loss Function: 0.5 x Weighted Cross-Entropy Loss ([0.1, 0.9, 0.3, 0.3]) +  0.5 × Dice
+
+* Optimizer: AdamW (LR = 0.001, weight decay = 1e-4)
+
+* Scheduler: ReduceLROnPlateau with patience of 3
+
+* Training Config: Batch size - 128; Epochs - 14; Early stopping - patience = 3
+
+* Training subset: 8,000 samples
+
+**2.1.3 Evaluation**
+
+* The following metrics were used for evaluation: Precision, Recall, IoU, Dice, Accuracy, mIoU, Macro Dice.
+
+* Special focus was placed on class 1 (water), as flood detection was the primary goal.
+
+* Experiment tracking via [Weights & Biases ](https://wandb.ai/home)
+
+**2.3.4 Experimentation Highlights**
+
+Before defining the final model, multiple architectures and their parameters were tested - U-Net (with ResNet-50, ResNet-34, MobileNetV2), DeepLabV3 with different backbones, additionally, multiple loss strategies and augmentation pipelines were explored. 
+
