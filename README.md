@@ -71,7 +71,7 @@ As the project was conducted in collaboration with other students there were 3 d
 
 #### 2.1 Training on Sentinel-2 dataset → testing on Sentinel-2 & Landsat datasets
 
-▶️ Relevant code for modelling part - `03_Modelling.ipynb`.
+▶️ Relevant code for modelling part - `04_modelling.ipynb`.
 
 **2.1.1 Final model** 
 
