@@ -1,0 +1,33 @@
+import torch
+import torch.nn as nn
+import segmentation_models_pytorch as smp
+from pathlib import Path
+
+class UnetResNet(nn.Module):
+    def __init__(self, num_classes=4, backbone="resnet34", pretrained=True):
+        super().__init__()
+
+        self.model = smp.Unet(
+            encoder_name=backbone,  
+            encoder_weights="imagenet" if pretrained else None,
+            in_channels=3,
+            classes=num_classes
+        )
+
+        self.name = f"UNet_{backbone}"
+
+    def forward(self, x, return_water_prob=False):
+        logits = self.model(x)
+        
+        if return_water_prob:
+            probs = torch.softmax(logits, dim=1)
+            water_probs = probs[:, 1, :, :]  
+            return {"out": logits, "water_prob": water_probs}
+    
+        return {"out": logits}
+
+    def save(self, directory: Path, suffix: str = "best"):
+        directory.mkdir(parents=True, exist_ok=True)
+        path = directory / f"unet_{self.name.lower()}_{suffix}.pth"
+        torch.save(self.state_dict(), path)
+        print(f"Model saved to {path}")
