@@ -60,20 +60,20 @@ Final dataset includes ~16,000 tiles with ~10% water pixels, the dataset was spl
 All experiments with models were conducted in JupiterHub (T4 GPU), to upload dataset to JupiterHub additional pipeline was created. 
 
 ------------
-### 2. Modelling
+### 3. Modelling
 
 
 
-As the project was conducted in collaboration with other students there were 3 different approaches to modelling:
-* Training on Sentinel-2 dataset → testing on Sentinel-2 & Landsat datasets
+As the project was conducted in collaboration with other students, there were 3 different approaches to modelling:
+* Training on Sentinel-2 dataset → testing on Sentinel-2 & Landsat datasets (focus of this repository)
 * Training on Landsat dataset → testing on Sentinel-2 & Landsat datasets
 * Training on Sentinel-2 & Landsat datasets → testing on Sentinel-2 & Landsat datasets
 
-#### 2.1 Training on Sentinel-2 dataset → testing on Sentinel-2 & Landsat datasets
+#### 3.1 Training on Sentinel-2 dataset → testing on Sentinel-2 & Landsat datasets
 
 ▶️ Relevant code for modelling part - `04_modelling.ipynb`.
 
-**2.1.1 Final model** 
+**3.1.1 Final model** 
 
 DeepLabV3 + ResNet34 for Water Segmentation with Uncertainty Estimation (Monte Carlo Dropout).
 Model provides classification into 4 classes — background, water, cloud, and snow/ice.
@@ -81,7 +81,7 @@ The schema is based on the original paper by Chen et al.
 
 ![Slide1](https://github.com/user-attachments/assets/1e19c1d3-c4a2-472a-be50-fd4c16be1983)
 
-**2.1.2 Training Setup**
+**3.1.2 Training Setup**
 
 * Loss Function: 0.5 x Weighted Cross-Entropy Loss ([0.1, 0.9, 0.3, 0.3]) +  0.5 × Dice
 
@@ -93,7 +93,7 @@ The schema is based on the original paper by Chen et al.
 
 * Training subset: 8,000 samples
 
-**2.1.3 Evaluation**
+**3.1.3 Evaluation**
 
 * The following metrics were used for evaluation: Precision, Recall, IoU, Dice, Accuracy, mIoU, Macro Dice.
 
@@ -101,7 +101,42 @@ The schema is based on the original paper by Chen et al.
 
 * Experiment tracking via [Weights & Biases ](https://wandb.ai/home)
 
-**2.3.4 Experimentation Highlights**
+**3.3.4 Experimentation Highlights**
 
 Before defining the final model, multiple architectures and their parameters were tested - U-Net (with ResNet-50, ResNet-34, MobileNetV2), DeepLabV3 with different backbones, additionally, multiple loss strategies and augmentation pipelines were explored. 
+
+
+------------
+### 4. Results Discussion
+
+The results of the final model performance on different validation sets are discussed below.
+
+▶️ Relevant code for evaluation part - `04_modelling.ipynb`.
+
+**4.1 Sentinel-2 Based Test Set Results**
+
+In this section, the results for evaluating model on the Sentinel-2 test set are discussed.
+
+| **Metric**         | **Class 1 (Water)** |
+|---------------------|---------------------|
+| Precision           | 0.839               |
+| Recall              | 0.898               |
+| IoU                 | 0.766               |
+| Dice Coefficient    | 0.867               |
+
+These results indicate a high degree of spatial overlap between predicted water regions and the ground truth, with both precision (0.839) and recall (0.898) values suggesting that the model is not only accurate but also robust in capturing a wide range of waterbody shapes and sizes.
+
+
+**4.2 Sentinel-2 Based Boris Flood Set Results**
+
+In this section, the results for evaluating model on the set of images made shortly after Boris storm are discussed.
+
+| **Metric**         | **Class 1 (Water)** |
+|---------------------|---------------------|
+| Precision           | 0.743               |
+| Recall              | 0.760               |
+| IoU                 | 0.602               |
+| Dice Coefficient    | 0.751               |
+
+On the Boris flood Sentinel set performance metrics decrease slightly. This decline is expected, given the presence of more complex, dynamic water features during flooding, which often differ from the stable water patterns the model was primarily trained on.
 
