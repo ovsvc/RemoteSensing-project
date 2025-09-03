@@ -14,6 +14,8 @@ The core of the methodology involves training a convolutional neural network for
 
 Ultimately, the project aims to assess the utility of optical satellite data in flood mapping and demonstrate the model’s ability to distinguish floodwaters from other land and water surfaces with quantifiable confidence.
 
+▶️ All outcomes (poster & report)  of the project can be found in the folder - `outcomes`-
+
 ------------
 
 ### 2. Dataset
