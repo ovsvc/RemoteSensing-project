@@ -7,7 +7,8 @@ Repository for Interdisciplinary Project in Data Science
 **Author:** Viktoriia Ovsianik (12217985)
 
 ### 1. Project Summary
-This project aims to **develop a machine learning-based approach for assessing floods using satellite imagery**, with a focus on the Central European flood event of September 2024. Leveraging multispectral optical imagery from the Landsat and Sentinel-2 satellite series—including RGB and near-infrared (NIR) bands—the project seeks to **estimate flood probability at the pixel level, rather than relying on traditional binary classification methods**. 
+This project aims to **develop a machine learning-based approach for assessing floods using satellite imagery**, with a focus on the Central European flood event of September 2024. Leveraging multispectral optical imagery from the Landsat and Sentinel-2 satellite series—including RGB and near-infrared (NIR) bands — the project focuses on estimating the likelihood of water presence at the pixel
+level, extended by more in-depth analysis of the model performance in flooded areas.
 
 The core of the methodology involves training a convolutional neural network for semantic segmentation (DeepLabV3+) to detect water-covered areas, extended with Monte Carlo dropout to generate uncertainty-aware predictions. The workflow includes data collection, preprocessing (e.g., cloud masking, tiles splitting), and feature engineering (e.g., NDWI), followed by model training and evaluation using standard metrics such as IoU, F1 score, Precision, Recall, and Dice Coefficient.
 
@@ -126,6 +127,10 @@ In this section, the results for evaluating model on the Sentinel-2 test set are
 
 These results indicate a high degree of spatial overlap between predicted water regions and the ground truth, with both precision (0.839) and recall (0.898) values suggesting that the model is not only accurate but also robust in capturing a wide range of waterbody shapes and sizes.
 
+Avisual example of an image form the test set, it's ground truth and predicted mask can be found below:
+
+<img width="1172" height="608" alt="test1_combined (4)" src="https://github.com/user-attachments/assets/544e6c10-d5e9-4d77-b769-1bafe30088f0" />
+
 
 **4.2 Sentinel-2 Based Boris Flood Set Results**
 
@@ -139,4 +144,22 @@ In this section, the results for evaluating model on the set of images made shor
 | Dice Coefficient    | 0.751               |
 
 On the Boris flood Sentinel set performance metrics decrease slightly. This decline is expected, given the presence of more complex, dynamic water features during flooding, which often differ from the stable water patterns the model was primarily trained on.
+
+**4.3 Landsat Based Boris Flood Set Resultss**
+
+In this section, the results for evaluating model on the set of images made shortly after Boris storm are discussed.
+
+| **Metric**         | **Class 1 (Water)** |
+|---------------------|---------------------|
+| Precision           | 0.024               |
+| Recall              | 0.161               |
+| IoU                 | 0.021               |
+| Dice Coefficient    | 0.042               |
+
+The model’s performance on the Boris flood dataset using Landsat imagery is substantially lower. The sharp decline in all evaluation metrics indicates that cross-sensor generalization is highly limited
+in this case. The model, trained exclusively on Sentinel-2 data, struggles to interpret Landsat inputs, which differ in spatial resolution, spectral characteristics, and surface reflectance properties.
+
+**4.4 Flood Water Detection**
+
+In addition to training a model for water segmentation, a secondary objective of this project was to evaluate the model’s performance in detecting water presence in flooded areas. Flooded reas near Lanžhot and Kisoroszi settlements were explored. After analyzing two cases where the presence of floodwater was evident, it can be concluded that the model was able to identify some flooded areas. However, the quality metrics for both images were lower than those obtained on the test set. This indicates a limitation arising from the model being trained primarily on water bodies under normal conditions, which affects its ability to accurately detect different types of flooding.
 
